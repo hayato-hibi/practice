@@ -1,66 +1,49 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
+void main() => runApp(MaterialApp(home: DemoApp()));
+
+class DemoApp extends StatelessWidget {
+  Widget build(BuildContext context) => Scaffold(body: Signature());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
+class Signature extends StatefulWidget {
+  SignatureState createState() => SignatureState();
+}
+
+class SignatureState extends State<Signature> {
+  List<Offset> _points = <Offset>[];
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return GestureDetector(
+      onPanUpdate: (DragUpdateDetails details) {
+        setState(() {
+          RenderBox referenceBox = context.findRenderObject();
+          Offset localPosition =
+              referenceBox.globalToLocal(details.globalPosition);
+          _points = List.from(_points)..add(localPosition);
+        });
+      },
+      onPanEnd: (DragEndDetails details) => _points.add(null),
+      child: CustomPaint(
+        painter: SignaturePainter(_points),
+        size: Size.infinite,
       ),
-      home: MyHomePage(title: 'github connect'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+class SignaturePainter extends CustomPainter {
+  SignaturePainter(this.points);
+  final List<Offset> points;
+  void paint(Canvas canvas, Size size) {
+    var paint = Paint()
+      ..color = Colors.green
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 3.0;
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null)
+        canvas.drawLine(points[i], points[i + 1], paint);
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
+  bool shouldRepaint(SignaturePainter other) => other.points != points;
 }

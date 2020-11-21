@@ -1,49 +1,71 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: DemoApp()));
-
-class DemoApp extends StatelessWidget {
-  Widget build(BuildContext context) => Scaffold(body: Signature());
+void main() {
+  runApp(MyApp());
 }
 
-class Signature extends StatefulWidget {
-  SignatureState createState() => SignatureState();
-}
-
-class SignatureState extends State<Signature> {
-  List<Offset> _points = <Offset>[];
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onPanUpdate: (DragUpdateDetails details) {
-        setState(() {
-          RenderBox referenceBox = context.findRenderObject();
-          Offset localPosition =
-              referenceBox.globalToLocal(details.globalPosition);
-          _points = List.from(_points)..add(localPosition);
-        });
-      },
-      onPanEnd: (DragEndDetails details) => _points.add(null),
-      child: CustomPaint(
-        painter: SignaturePainter(_points),
-        size: Size.infinite,
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
       ),
+      home: MyHomePage(),
     );
   }
 }
 
-class SignaturePainter extends CustomPainter {
-  SignaturePainter(this.points);
-  final List<Offset> points;
-  void paint(Canvas canvas, Size size) {
-    var paint = Paint()
-      ..color = Colors.green
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 3.0;
-    for (int i = 0; i < points.length - 1; i++) {
-      if (points[i] != null && points[i + 1] != null)
-        canvas.drawLine(points[i], points[i + 1], paint);
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<Widget> lists = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 100; i++) {
+      lists.add(getRow(i));
     }
   }
 
-  bool shouldRepaint(SignaturePainter other) => other.points != points;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Sample App"),
+      ),
+      body: ListView.builder(
+        itemCount: lists.length,
+        itemBuilder: (BuildContext context, int position) {
+          return getRow(position);
+        },
+      ),
+    );
+  }
+
+  Widget getRow(int i) {
+    return GestureDetector(
+      child: Padding(
+        padding: EdgeInsets.all(10.0),
+        child: Text("Row $i"),
+      ),
+      onTap: () {
+        setState(() {
+          lists.add(getRow(lists.length));
+          print('row $i');
+        });
+      },
+    );
+  }
 }

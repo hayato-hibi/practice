@@ -29,15 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Widget> lists = [];
-
-  @override
-  void initState() {
-    super.initState();
-    for (int i = 0; i < 100; i++) {
-      lists.add(getRow(i));
-    }
-  }
+  String _errorText;
 
   @override
   Widget build(BuildContext context) {
@@ -45,27 +37,33 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text("Sample App"),
       ),
-      body: ListView.builder(
-        itemCount: lists.length,
-        itemBuilder: (BuildContext context, int position) {
-          return getRow(position);
-        },
+      body: Center(
+        child: TextField(
+          onSubmitted: (String text) {
+            setState(() {
+              if (!isEmail(text)) {
+                _errorText = 'Error: This is not an Email';
+              } else {
+                _errorText = null;
+              }
+            });
+          },
+          decoration: InputDecoration(
+              hintText: "This is a hint", errorText: _getErrorText()),
+        ),
       ),
     );
   }
 
-  Widget getRow(int i) {
-    return GestureDetector(
-      child: Padding(
-        padding: EdgeInsets.all(10.0),
-        child: Text("Row $i"),
-      ),
-      onTap: () {
-        setState(() {
-          lists.add(getRow(lists.length));
-          print('row $i');
-        });
-      },
-    );
+  _getErrorText() {
+    return _errorText;
+  }
+
+  bool isEmail(String emailString) {
+    String emailRegexp =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regExp = RegExp(emailRegexp);
+
+    return regExp.hasMatch(emailString);
   }
 }

@@ -83,6 +83,7 @@ class _TapboxCstate extends State<TapboxC> {
                   width: 10.0,
                 )
               : null,
+          borderRadius: BorderRadius.circular(30),
         ),
       ),
     );

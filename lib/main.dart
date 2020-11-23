@@ -12,49 +12,27 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Flutter Demo'),
+          title: Text('Hello Rectangle'),
         ),
-        body: Center(child: LogoApp()),
+        body: Center(child: HelloRectangle()),
       ),
     );
   }
 }
 
-class LogoApp extends StatefulWidget {
-  _LogoAppState createState() => _LogoAppState();
-}
-
-class _LogoAppState extends State<LogoApp> with SingleTickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller =
-        AnimationController(duration: const Duration(seconds: 2), vsync: this);
-    animation = Tween<double>(begin: 0, end: 300).animate(controller)
-      ..addListener(() {
-        setState(() {});
-      });
-    controller.forward();
-  }
-
+class HelloRectangle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        height: animation.value,
-        width: animation.value,
-        child: FlutterLogo(),
+    return Container(
+      color: Colors.greenAccent,
+      height: 400,
+      width: 400,
+      child: Center(
+        child: Text(
+          'Hello!',
+          style: TextStyle(fontSize: 40.0),
+        ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 }

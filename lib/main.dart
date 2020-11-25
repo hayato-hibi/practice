@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practice_app/category_route.dart';
 import 'category.dart';
 
 // TODO: Pass this information into your custom [Category] widget
@@ -19,17 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Unit Converter',
-      home: Scaffold(
-        backgroundColor: Colors.green[100],
-        body: Center(
-          // TODO: Determine what properties you'll need to pass into the widget
-          child: Category(
-            name: _categoryName,
-            color: _categoryColor,
-            iconLocation: _categoryIcon,
-          ),
-        ),
-      ),
+      home: CategoryRoute(),
     );
   }
 }
